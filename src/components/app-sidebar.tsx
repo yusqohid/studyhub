@@ -3,21 +3,14 @@
 import * as React from "react"
 import {
   BookOpen,
-  Brain,
   FileText,
-  Heart,
   Home,
-  PlusCircle,
-  Search,
   Settings,
-  HelpCircle,
-  Users,
-  Star
+  User,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import { useAuth } from "@/contexts/authContext"
 import { useNotes } from "@/contexts/notesContext"
@@ -35,8 +28,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth()
   const { notes } = useNotes()
   
-  // Get recent notes for documents section
-  const recentNotes = notes.slice(0, 5).map(note => ({
+  // Get recent notes for documents section (limit to 4 for cleaner look)
+  const recentNotes = notes.slice(0, 4).map(note => ({
     name: note.title || 'Untitled',
     url: `/notes/${note.id}`,
     icon: FileText,
@@ -60,36 +53,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: FileText,
       },
       {
-        title: "Favorites",
-        url: "/notes?filter=favorites",
-        icon: Heart,
-      },
-      {
-        title: "AI Summarizer",
-        url: "/notes?ai=true",
-        icon: Brain,
-      },
-    ],
-    navSecondary: [
-      {
-        title: "Search Notes",
-        url: "/notes?search=true",
-        icon: Search,
-      },
-      {
         title: "Profile",
         url: "/profile",
-        icon: Users,
+        icon: User,
       },
       {
         title: "Settings",
-        url: "/settings",
+        url: "/settings", 
         icon: Settings,
-      },
-      {
-        title: "Help & Support",
-        url: "/help",
-        icon: HelpCircle,
       },
     ],
     documents: recentNotes,
@@ -115,7 +86,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         {data.documents.length > 0 && <NavDocuments items={data.documents} />}
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

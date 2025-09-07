@@ -46,10 +46,10 @@ export default function Navigation() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
               <BookOpen className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-blue-600">
               StudyHub
             </span>
           </Link>
@@ -78,7 +78,7 @@ export default function Navigation() {
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.photoURL || ""} alt={user.displayName || ""} />
-                      <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs">
+                      <AvatarFallback className="bg-blue-600 text-white text-xs">
                         {getUserInitials(user.displayName, user.email)}
                       </AvatarFallback>
                     </Avatar>
@@ -119,7 +119,7 @@ export default function Navigation() {
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
                     Daftar Gratis
                   </Button>
                 </Link>

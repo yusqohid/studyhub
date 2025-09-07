@@ -1,21 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { NotesList } from "@/components/NotesList";
 import { NoteEditor } from "@/components/NoteEditor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import { Plus, FileText, Heart, Eye, TrendingUp } from "lucide-react";
+import { Plus, FileText, Heart, Eye, TrendingUp, Sparkles, Brain, Clock, Zap } from "lucide-react";
 import { useNotes } from "@/contexts/notesContext";
 import { Note, NoteFormData } from "@/types/note";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { toast } from "sonner";
 
 export default function NotesPage() {
   const {
@@ -31,16 +33,48 @@ export default function NotesPage() {
   const [showEditor, setShowEditor] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [recentActivity, setRecentActivity] = useState<string[]>([]);
+
+  // Track recent activity
+  useEffect(() => {
+    const activities = [];
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const todayNotes = notes.filter(note => 
+      new Date(note.updatedAt) >= today
+    );
+    
+    if (todayNotes.length > 0) {
+      activities.push(`${todayNotes.length} catatan diperbarui hari ini`);
+    }
+    
+    const thisWeekNotes = notes.filter(note => {
+      const noteDate = new Date(note.updatedAt);
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      return noteDate >= weekAgo;
+    });
+    
+    if (thisWeekNotes.length > todayNotes.length) {
+      activities.push(`${thisWeekNotes.length - todayNotes.length} catatan minggu ini`);
+    }
+    
+    setRecentActivity(activities);
+  }, [notes]);
 
   const handleCreateNote = async (noteData: NoteFormData) => {
     try {
       setIsCreating(true);
+      toast.loading('Membuat catatan baru...', { id: 'create-note' });
+      
       const noteId = await createNote(noteData);
       setShowEditor(false);
+      
+      toast.success('Catatan berhasil dibuat! 🎉', { id: 'create-note' });
       router.push(`/notes/${noteId}`);
     } catch (error) {
       console.error('Error creating note:', error);
-      alert('Gagal membuat catatan');
+      toast.error('Gagal membuat catatan. Silakan coba lagi.', { id: 'create-note' });
     } finally {
       setIsCreating(false);
     }
@@ -164,23 +198,39 @@ export default function NotesPage() {
               {/* Header */}
               <div className="px-4 lg:px-6">
                 <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Catatan Saya</h1>
-                    <p className="text-gray-600 mt-1">
-                      Kelola dan organisir catatan belajar Anda
-                    </p>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <h1 className="text-3xl font-bold text-gray-900">Catatan Saya</h1>
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        AI-Powered
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-600">
+                      <span>Kelola dan organisir catatan belajar Anda</span>
+                      {recentActivity.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-green-600">{recentActivity[0]}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <Button
-                    onClick={() => setShowEditor(true)}
-                    variant="default"                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Buat Catatan Baru
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => setShowEditor(true)}
+                      size="lg"
+                      className="font-medium"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Buat Catatan Baru
+                    </Button>
+                  </div>
                 </div>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <Card>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                  <Card className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -194,7 +244,7 @@ export default function NotesPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
@@ -208,7 +258,7 @@ export default function NotesPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -222,7 +272,7 @@ export default function NotesPage() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                  <Card className="hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -231,6 +281,20 @@ export default function NotesPage() {
                         <div>
                           <p className="text-2xl font-bold text-gray-900">{stats.thisMonth}</p>
                           <p className="text-sm text-gray-600">Bulan Ini</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-md transition-shadow bg-orange-50 border-orange-200">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
+                          <Brain className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <div>
+                          <p className="text-2xl font-bold text-orange-800">AI</p>
+                          <p className="text-sm text-orange-700">Ready</p>
                         </div>
                       </div>
                     </CardContent>

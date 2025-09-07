@@ -85,53 +85,60 @@ export default function ProfilePage() {
             <div className="@container/main flex flex-1 flex-col gap-2">
               <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
                 <div className="px-4 lg:px-6">
-                {/* Profile Header */}
-                <div className="mb-8">
-                  <div className="flex items-center gap-6 mb-6">
-                    <Avatar className="h-24 w-24">
-                      <AvatarImage src={user?.photoURL || ""} alt={user?.displayName || ""} />
-                      <AvatarFallback className="bg-gradient-to-r from-blue-600 to-purple-600 text-white text-2xl">
-                        {getUserInitials(user?.displayName, user?.email)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        {user?.displayName || "User"}
-                      </h1>
-                      <p className="text-gray-600 mb-4">{user?.email}</p>
-                      <div className="flex items-center gap-4">
-                        <Badge variant="secondary" className="flex items-center gap-1">
-                          <User className="w-3 h-3" />
-                          {user?.providerData[0]?.providerId === "google.com" ? "Google" : "Email/Password"}
-                        </Badge>
-                        {user?.emailVerified ? (
-                          <Badge variant="secondary" className="bg-green-100 text-green-800 flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" />
-                            Email Terverifikasi
-                          </Badge>
-                        ) : (
-                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3" />
-                            Email Belum Terverifikasi
-                          </Badge>
-                        )}
-                      </div>
+                  {/* Page Header */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
+                      <p className="text-gray-600 mt-1">Kelola informasi akun dan preferensi Anda</p>
                     </div>
-                    <Button variant="outline">
-                      <Settings className="w-4 h-4 mr-2" />
-                      Pengaturan
-                    </Button>
                   </div>
+                  {/* Profile Information */}
+                  <div className="mb-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-6 mb-6">
+                      <Avatar className="h-20 w-20 sm:h-24 sm:w-24 mx-auto sm:mx-0">
+                        <AvatarImage src={user?.photoURL || ""} alt={user?.displayName || ""} />
+                        <AvatarFallback className="bg-blue-600 text-white text-xl sm:text-2xl">
+                          {getUserInitials(user?.displayName, user?.email)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 text-center sm:text-left">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                          {user?.displayName || "User"}
+                        </h2>
+                        <p className="text-gray-600 mb-4">{user?.email}</p>
+                        <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+                          <Badge variant="secondary" className="flex items-center gap-1 bg-gray-100 text-gray-700 border-gray-200">
+                            <User className="w-3 h-3" />
+                            {user?.providerData[0]?.providerId === "google.com" ? "Google" : "Email/Password"}
+                          </Badge>
+                          {user?.emailVerified ? (
+                            <Badge variant="secondary" className="bg-green-100 text-green-700 border-green-200 flex items-center gap-1">
+                              <CheckCircle className="w-3 h-3" />
+                              Email Terverifikasi
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="bg-amber-100 text-amber-700 border-amber-200 flex items-center gap-1">
+                              <AlertCircle className="w-3 h-3" />
+                              Email Belum Terverifikasi
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <Button variant="outline" className="w-full sm:w-auto">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Pengaturan
+                      </Button>
+                    </div>
 
                   {!user?.emailVerified && (
-                    <Card className="bg-yellow-50 border-yellow-200">
+                    <Card className="bg-amber-50 border-amber-200">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <AlertCircle className="w-5 h-5 text-yellow-600" />
+                            <AlertCircle className="w-5 h-5 text-amber-600" />
                             <div>
-                              <p className="font-medium text-yellow-800">Email belum terverifikasi</p>
-                              <p className="text-sm text-yellow-700">
+                              <p className="font-medium text-amber-800">Email belum terverifikasi</p>
+                              <p className="text-sm text-amber-700">
                                 Verifikasi email Anda untuk keamanan akun yang lebih baik
                               </p>
                             </div>
@@ -140,7 +147,7 @@ export default function ProfilePage() {
                             size="sm" 
                             variant="outline"
                             onClick={handleSendVerification}
-                            className="border-yellow-300 text-yellow-700 hover:bg-yellow-100"
+                            className="border-amber-300 text-amber-700 hover:bg-amber-100"
                           >
                             <Mail className="w-4 h-4 mr-1" />
                             Kirim Verifikasi
@@ -282,14 +289,14 @@ export default function ProfilePage() {
                               >
                                 <h4 className="font-medium text-gray-900 line-clamp-1">{note.title}</h4>
                                 <div className="flex items-center gap-2 mt-1">
-                                  <Badge variant="secondary" className="text-xs">
+                                  <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-700 border-blue-200">
                                     {note.category}
                                   </Badge>
                                   <span className="text-xs text-gray-500">
                                     {formatDistanceToNow(note.updatedAt, { addSuffix: true })}
                                   </span>
                                   {note.isPublic && (
-                                    <Badge variant="outline" className="text-xs text-green-600">
+                                    <Badge variant="outline" className="text-xs text-green-600 border-green-200">
                                       <Eye className="w-2 h-2 mr-1" />
                                       Publik
                                     </Badge>

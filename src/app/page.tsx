@@ -16,10 +16,10 @@ export default function Home() {
             <span className="text-xl font-semibold">StudyHub</span>
           </div>
           <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Features
             </Link>
-            <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </Link>
             <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
@@ -40,7 +40,7 @@ export default function Home() {
             <span className="block text-primary">AI-Powered Insights</span>
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fadeInUp delay-100">
-            Transform your learning experience with intelligent note-taking, AI summarization, 
+            Transform your learning experience with intelligent note-taking, AI summarization,
             and collaborative study tools designed for modern students.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp delay-200">
@@ -69,7 +69,7 @@ export default function Home() {
               Powerful tools to enhance your learning and productivity
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp delay-100">
               <CardHeader>
@@ -163,7 +163,7 @@ export default function Home() {
                 Smart note-taking with AI-powered insights for modern students.
               </p>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="font-medium">Product</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -172,7 +172,7 @@ export default function Home() {
                 <li><Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
               </ul>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="font-medium">Account</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
@@ -181,19 +181,19 @@ export default function Home() {
                 <li><Link href="/profile" className="hover:text-foreground transition-colors">Profile</Link></li>
               </ul>
             </div>
-            
+
             <div className="space-y-3">
               <h4 className="font-medium">Support</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="#" className="hover:text-foreground transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><a href="https://github.com/yusqohid" className="hover:text-foreground transition-colors">GitHub</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 StudyHub. All rights reserved.</p>
+            <p>&copy; 2025 Yusqo Hid. All rights reserved.</p>
           </div>
         </div>
       </footer>

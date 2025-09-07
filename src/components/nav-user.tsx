@@ -3,11 +3,9 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
-  CreditCard,
-  MoreVertical,
   LogOut,
-  Bell,
   User,
+  Settings,
 } from "lucide-react"
 
 import { useAuth } from "@/contexts/authContext"
@@ -74,7 +72,7 @@ export function NavUser({
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className="rounded-lg bg-blue-600 text-white">
                   {getInitials(user.name)}
                 </AvatarFallback>
               </Avatar>
@@ -84,11 +82,10 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              <MoreVertical className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
@@ -97,7 +94,7 @@ export function NavUser({
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback className="rounded-lg bg-blue-600 text-white">
                     {getInitials(user.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -118,14 +115,10 @@ export function NavUser({
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/pricing">
-                  <CreditCard />
-                  Billing
+                <Link href="/settings">
+                  <Settings />
+                  Settings
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
