@@ -261,7 +261,7 @@ If you have any questions or need help, please:
 
 - 📧 Create an [Issue](https://github.com/yusqohid/studyhub/issues)
 - 💬 Start a [Discussion](https://github.com/yusqohid/studyhub/discussions)
-- 📱 Contact: [yusqohid@example.com](mailto:yusqohid@example.com)
+- 📱 Contact: [yusqohid1@gmail.com](mailto:yusqohid1@gmail.com)
 
 ---
 
@@ -276,6 +276,6 @@ If you have any questions or need help, please:
 ---
 
 <div align="center">
-  <p>Made with ❤️ by <a href="https://github.com/yusqohid">Yusuf Qohid</a></p>
+  <p>Made with ❤️ by <a href="https://github.com/yusqohid">Yusqo Hid</a></p>
   <p>⭐ Star this repository if you find it helpful!</p>
 </div>
