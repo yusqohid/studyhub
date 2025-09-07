@@ -18,7 +18,6 @@ import {
   Heart, 
   Eye, 
   Settings,
-  Edit,
   Shield,
   CheckCircle,
   AlertCircle
@@ -306,10 +305,20 @@ export default function ProfilePage() {
                             ))}
                           </div>
                         ) : (
-                          <div className="text-center py-6 text-gray-500">
-                            <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                            <p>Belum ada catatan</p>
-                            <p className="text-sm">Mulai buat catatan pertama Anda!</p>
+                          <div className="text-center py-8 text-gray-500">
+                            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                              <FileText className="w-8 h-8 text-gray-400" />
+                            </div>
+                            <p className="font-medium mb-2">Belum ada catatan</p>
+                            <p className="text-sm mb-4">Mulai buat catatan pertama Anda!</p>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => router.push('/notes')}
+                              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                            >
+                              Buat Catatan
+                            </Button>
                           </div>
                         )}
                       </CardContent>

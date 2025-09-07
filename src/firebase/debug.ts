@@ -34,13 +34,14 @@ export const testFirebaseConnection = async () => {
       );
       const snapshot = await getDocs(testQuery);
       console.log('✅ Firestore read successful, found', snapshot.docs.length, 'documents');
-    } catch (firestoreError: any) {
+    } catch (firestoreError: unknown) {
+      const error = firestoreError as { code?: string; message?: string };
       console.error('❌ Firestore read error:', {
-        code: firestoreError.code,
-        message: firestoreError.message
+        code: error.code,
+        message: error.message
       });
       
-      if (firestoreError.code === 'permission-denied') {
+      if (error.code === 'permission-denied') {
         console.log('🔐 Permission denied - Firestore rules might not be deployed or incorrect');
         return false;
       }
@@ -60,10 +61,11 @@ export const testFirebaseConnection = async () => {
   }
 };
 
-export const debugFirebaseError = (error: any) => {
+export const debugFirebaseError = (error: unknown) => {
+  const fbError = error as { code?: string; message?: string };
   console.error('Firebase Error Details:');
-  console.error('Code:', error.code);
-  console.error('Message:', error.message);
+  console.error('Code:', fbError.code);
+  console.error('Message:', fbError.message);
   console.error('Full error:', error);
   
   // Common Firebase errors and solutions
@@ -76,7 +78,7 @@ export const debugFirebaseError = (error: any) => {
     'invalid-argument': 'Check data types and required fields'
   };
   
-  if (error.code && errorSolutions[error.code]) {
-    console.error('Suggested solution:', errorSolutions[error.code]);
+  if (fbError.code && errorSolutions[fbError.code]) {
+    console.error('Suggested solution:', errorSolutions[fbError.code]);
   }
 };

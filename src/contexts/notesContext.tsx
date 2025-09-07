@@ -129,7 +129,7 @@ export const NotesProvider = ({ children }: { children: React.ReactNode }) => {
           }
           
           const notesData = snapshot.docs.map(doc => {
-            const data = { id: doc.id, ...doc.data() } as any;
+            const data = { id: doc.id, ...doc.data() } as Record<string, unknown> & { id: string };
             console.log('Processing note:', { 
               id: data.id, 
               title: data.title || 'No title', 

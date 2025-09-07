@@ -436,7 +436,7 @@ export function AISummarizer({ content, title, onSummaryGenerated }: AISummarize
           </Alert>
         )}
 
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'summarize' | 'questions' | 'explain')}>
           <TabsList className="grid w-full grid-cols-3 h-auto p-1">
             <TabsTrigger value="summarize" className="flex flex-col items-center gap-1 py-3 h-auto">
               <Brain className="w-4 h-4" />

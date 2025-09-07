@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
@@ -26,7 +26,7 @@ import {
   Check
 } from "lucide-react";
 import { useNotes } from "@/contexts/notesContext";
-import { Note } from "@/types/note";
+import type { Note } from "@/types/note";
 import { formatDistanceToNow } from "date-fns";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { AISummarizer } from "@/components/AISummarizer";
@@ -287,7 +287,7 @@ export default function NotePage({ params: paramsPromise }: { params: Promise<{ 
                             <div className="text-center py-8 text-gray-500">
                               <Brain className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                               <p>Belum ada ringkasan untuk catatan ini</p>
-                              <p className="text-sm">Klik tombol "Buat Ringkasan AI" untuk mendapatkan ringkasan otomatis</p>
+                              <p className="text-sm">Klik tombol &quot;Buat Ringkasan AI&quot; untuk mendapatkan ringkasan otomatis</p>
                             </div>
                           )}
                         </CardContent>
