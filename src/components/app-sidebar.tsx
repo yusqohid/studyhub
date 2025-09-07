@@ -2,27 +2,25 @@
 
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
-} from "@tabler/icons-react"
+  BookOpen,
+  Brain,
+  FileText,
+  Heart,
+  Home,
+  PlusCircle,
+  Search,
+  Settings,
+  HelpCircle,
+  Users,
+  Star
+} from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { useAuth } from "@/contexts/authContext"
+import { useNotes } from "@/contexts/notesContext"
 import {
   Sidebar,
   SidebarContent,
@@ -33,104 +31,70 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
-    },
-    {
-      title: "Homework",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: "My Notes 01",
-      url: "#",
-      icon: IconFileWord,
-    },
-  ],
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+  const { notes } = useNotes()
+  
+  // Get recent notes for documents section
+  const recentNotes = notes.slice(0, 5).map(note => ({
+    name: note.title || 'Untitled',
+    url: `/notes/${note.id}`,
+    icon: FileText,
+  }))
+
+  const data = {
+    user: {
+      name: user?.displayName || user?.email?.split('@')[0] || 'User',
+      email: user?.email || 'user@example.com',
+      avatar: user?.photoURL || '/avatars/default.jpg',
+    },
+    navMain: [
+      {
+        title: "Dashboard",
+        url: "/dashboard",
+        icon: Home,
+      },
+      {
+        title: "All Notes", 
+        url: "/notes",
+        icon: FileText,
+      },
+      {
+        title: "Favorites",
+        url: "/notes?filter=favorites",
+        icon: Heart,
+      },
+      {
+        title: "AI Summarizer",
+        url: "/notes?ai=true",
+        icon: Brain,
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Search Notes",
+        url: "/notes?search=true",
+        icon: Search,
+      },
+      {
+        title: "Profile",
+        url: "/profile",
+        icon: Users,
+      },
+      {
+        title: "Settings",
+        url: "/settings",
+        icon: Settings,
+      },
+      {
+        title: "Help & Support",
+        url: "/help",
+        icon: HelpCircle,
+      },
+    ],
+    documents: recentNotes,
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -140,8 +104,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
+              <a href="/dashboard">
+                <BookOpen className="!size-5" />
                 <span className="text-base font-semibold">StudyHub</span>
               </a>
             </SidebarMenuButton>
@@ -150,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
+        {data.documents.length > 0 && <NavDocuments items={data.documents} />}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

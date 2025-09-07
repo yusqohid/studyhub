@@ -15,6 +15,7 @@ import {
   Timestamp
 } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
+import { debugFirebaseError } from "@/firebase/debug";
 import { useAuth } from "@/contexts/authContext";
 import { Note, NoteFormData, NoteFilters, NoteCategory } from "@/types/note";
 
@@ -97,33 +98,92 @@ export const NotesProvider = ({ children }: { children: React.ReactNode }) => {
   // Listen to notes changes
   useEffect(() => {
     if (!user) {
+      console.log('No user found, clearing notes');
       setNotes([]);
       setLoading(false);
+      setError(null);
       return;
     }
 
-    const notesQuery = query(
-      collection(db, 'notes'),
-      where('authorId', '==', user.uid),
-      orderBy('updatedAt', 'desc')
-    );
+    console.log('Setting up notes listener for user:', {
+      uid: user.uid,
+      email: user.email,
+      emailVerified: user.emailVerified
+    });
 
-    const unsubscribe = onSnapshot(
-      notesQuery,
-      (snapshot) => {
-        const notesData = snapshot.docs.map(doc => convertFirestoreNote({ id: doc.id, ...doc.data() }));
-        setNotes(notesData);
-        setLoading(false);
-        setError(null);
-      },
-      (err) => {
-        console.error('Error fetching notes:', err);
-        setError('Gagal memuat catatan');
-        setLoading(false);
-      }
-    );
+    try {
+      // Simple query first - just get user's notes without ordering
+      const notesQuery = query(
+        collection(db, 'notes'),
+        where('authorId', '==', user.uid)
+      );
 
-    return () => unsubscribe();
+      const unsubscribe = onSnapshot(
+        notesQuery,
+        (snapshot) => {
+          console.log('✅ Notes snapshot received successfully');
+          console.log('📊 Notes count:', snapshot.docs.length);
+          
+          if (snapshot.docs.length === 0) {
+            console.log('📝 No notes found for this user');
+          }
+          
+          const notesData = snapshot.docs.map(doc => {
+            const data = { id: doc.id, ...doc.data() } as any;
+            console.log('Processing note:', { 
+              id: data.id, 
+              title: data.title || 'No title', 
+              authorId: data.authorId || 'No authorId' 
+            });
+            return convertFirestoreNote(data);
+          });
+          
+          // Sort in memory instead of using orderBy to avoid index issues
+          const sortedNotes = notesData.sort((a, b) => 
+            b.updatedAt.getTime() - a.updatedAt.getTime()
+          );
+          
+          setNotes(sortedNotes);
+          setLoading(false);
+          setError(null);
+        },
+        (err) => {
+          console.error('❌ Error fetching notes:', {
+            code: err.code,
+            message: err.message,
+            details: err
+          });
+          
+          // More specific error handling
+          if (err.code === 'permission-denied') {
+            console.log('🔐 Permission denied - checking auth state...');
+            console.log('User auth state:', {
+              uid: user?.uid,
+              email: user?.email,
+              emailVerified: user?.emailVerified,
+              providerData: user?.providerData?.length || 0
+            });
+            setError('Tidak memiliki izin untuk mengakses catatan. Pastikan rules Firestore sudah di-deploy.');
+          } else if (err.code === 'unavailable') {
+            setError('Layanan tidak tersedia. Coba lagi nanti.');
+          } else if (err.code === 'failed-precondition') {
+            setError('Database belum dikonfigurasi dengan benar. Periksa Firestore rules.');
+          } else {
+            setError('Gagal memuat catatan: ' + err.message);
+          }
+          setLoading(false);
+        }
+      );
+
+      return () => {
+        console.log('Cleaning up notes listener');
+        unsubscribe();
+      };
+    } catch (error) {
+      console.error('Error setting up notes listener:', error);
+      setError('Gagal mengatur koneksi ke database');
+      setLoading(false);
+    }
   }, [user]);
 
   // Filter notes based on current filters
@@ -165,23 +225,56 @@ export const NotesProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const createNote = async (noteData: NoteFormData): Promise<string> => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user) {
+      console.log('❌ User not authenticated - redirecting to login');
+      throw new Error('Anda harus login terlebih dahulu untuk membuat catatan');
+    }
+
+    console.log('Creating note with data:', noteData);
+    console.log('User info:', { uid: user.uid, email: user.email, displayName: user.displayName });
 
     try {
-      const docRef = await addDoc(collection(db, 'notes'), {
-        ...noteData,
+      // Validate required fields
+      if (!noteData.title || !noteData.content) {
+        throw new Error('Title and content are required');
+      }
+
+      const noteToSave = {
+        title: noteData.title,
+        content: noteData.content,
+        category: noteData.category || 'Lainnya',
+        tags: noteData.tags || [],
+        isPublic: noteData.isPublic || false,
         authorId: user.uid,
-        authorName: user.displayName || user.email || 'Anonymous',
+        authorName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
         isFavorite: false,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         sharedWith: []
-      });
+      };
 
+      console.log('Saving note to Firestore:', noteToSave);
+
+      const docRef = await addDoc(collection(db, 'notes'), noteToSave);
+
+      console.log('Note created successfully with ID:', docRef.id);
       return docRef.id;
     } catch (err) {
       console.error('Error creating note:', err);
-      throw new Error('Gagal membuat catatan');
+      debugFirebaseError(err);
+      
+      // More specific error messages
+      if (err instanceof Error) {
+        if (err.message.includes('permission-denied')) {
+          throw new Error('Tidak memiliki izin untuk membuat catatan. Pastikan Anda sudah login.');
+        } else if (err.message.includes('network')) {
+          throw new Error('Masalah koneksi internet. Coba lagi nanti.');
+        } else {
+          throw new Error(`Gagal membuat catatan: ${err.message}`);
+        }
+      } else {
+        throw new Error('Gagal membuat catatan. Terjadi kesalahan tidak dikenal.');
+      }
     }
   };
 

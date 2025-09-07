@@ -15,6 +15,7 @@ import { Plus, FileText, Heart, Eye, TrendingUp } from "lucide-react";
 import { useNotes } from "@/contexts/notesContext";
 import { Note, NoteFormData } from "@/types/note";
 import { useRouter } from "next/navigation";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function NotesPage() {
   const {
@@ -111,38 +112,41 @@ export default function NotesPage() {
 
   if (showEditor) {
     return (
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col p-6">
-            <NoteEditor
-              initialData={editingNote ? {
-                title: editingNote.title,
-                content: editingNote.content,
-                category: editingNote.category,
-                tags: editingNote.tags,
-                isPublic: editingNote.isPublic
-              } : undefined}
-              onSave={editingNote ? handleEditNote : handleCreateNote}
-              onCancel={handleCancelEdit}
-              isEditing={!!editingNote}
-              isLoading={isCreating}
-            />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+      <ProtectedRoute>
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+          }
+        >
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col p-6">
+              <NoteEditor
+                initialData={editingNote ? {
+                  title: editingNote.title,
+                  content: editingNote.content,
+                  category: editingNote.category,
+                  tags: editingNote.tags,
+                  isPublic: editingNote.isPublic
+                } : undefined}
+                onSave={editingNote ? handleEditNote : handleCreateNote}
+                onCancel={handleCancelEdit}
+                isEditing={!!editingNote}
+                isLoading={isCreating}
+              />
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </ProtectedRoute>
     );
   }
 
   return (
+    <ProtectedRoute>
     <SidebarProvider
       style={
         {
@@ -251,5 +255,6 @@ export default function NotesPage() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }

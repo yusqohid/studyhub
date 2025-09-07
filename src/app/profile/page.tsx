@@ -27,6 +27,7 @@ import { useAuth } from "@/contexts/authContext";
 import { useNotes } from "@/contexts/notesContext";
 import { useRouter } from "next/navigation";
 import { formatDistanceToNow } from "date-fns";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function ProfilePage() {
   const { user, sendVerificationEmail } = useAuth();
@@ -68,21 +69,22 @@ export default function ProfilePage() {
   const recentNotes = notes.slice(0, 5);
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <div className="px-4 lg:px-6">
+    <ProtectedRoute>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader />
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <div className="px-4 lg:px-6">
                 {/* Profile Header */}
                 <div className="mb-8">
                   <div className="flex items-center gap-6 mb-6">
@@ -313,5 +315,6 @@ export default function ProfilePage() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }

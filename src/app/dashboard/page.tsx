@@ -19,17 +19,33 @@ import {
   ArrowRight,
   BookOpen,
   Brain,
-  Search
+  Search,
+  Settings
 } from "lucide-react";
 import { useNotes } from "@/contexts/notesContext";
 import { useAuth } from "@/contexts/authContext";
 import { useRouter } from "next/navigation";
+import { testFirebaseConnection } from "@/firebase/debug";
+import { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { notes, loading } = useNotes();
+  const { notes, loading, error } = useNotes();
   const router = useRouter();
+  const [testResult, setTestResult] = useState<string | null>(null);
+
+  const handleTestFirebase = async () => {
+    try {
+      const result = await testFirebaseConnection();
+      setTestResult(result ? "✅ Firebase connected successfully" : "❌ Firebase connection failed");
+      setTimeout(() => setTestResult(null), 5000);
+    } catch (error) {
+      setTestResult(`❌ Connection test failed: ${error}`);
+      setTimeout(() => setTestResult(null), 5000);
+    }
+  };
 
   const stats = {
     total: notes.length,
@@ -46,7 +62,41 @@ export default function DashboardPage() {
   const recentNotes = notes.slice(0, 5);
   const favoriteNotes = notes.filter(note => note.isFavorite).slice(0, 3);
 
+  // Show error state if there's a connection issue
+  if (error) {
+    return (
+      <ProtectedRoute>
+        <SidebarProvider>
+          <AppSidebar variant="inset" />
+          <SidebarInset>
+            <SiteHeader />
+            <div className="flex flex-1 flex-col items-center justify-center p-8">
+              <Card className="max-w-md text-center">
+                <CardHeader>
+                  <CardTitle className="text-red-600">Connection Error</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground">{error}</p>
+                  <div className="flex gap-2 justify-center">
+                    <Button onClick={handleTestFirebase} variant="outline">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Test Connection
+                    </Button>
+                    <Button onClick={() => window.location.reload()}>
+                      Retry
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </SidebarInset>
+        </SidebarProvider>
+      </ProtectedRoute>
+    );
+  }
+
   return (
+    <ProtectedRoute>
     <SidebarProvider
       style={
         {
@@ -101,6 +151,25 @@ export default function DashboardPage() {
                     <span>AI Summarizer</span>
                   </Button>
                 </div>
+
+                {/* Debug Button - Remove in production */}
+                {process.env.NODE_ENV === 'development' && (
+                  <div className="mb-4 space-y-2">
+                    <Button 
+                      onClick={handleTestFirebase}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      <Settings className="w-4 h-4 mr-2" />
+                      Test Firebase Connection
+                    </Button>
+                    {testResult && (
+                      <p className="text-sm px-2 py-1 bg-muted rounded">
+                        {testResult}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
@@ -320,5 +389,6 @@ export default function DashboardPage() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }

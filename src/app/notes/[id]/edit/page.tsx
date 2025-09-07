@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useNotes } from "@/contexts/notesContext";
 import { NoteFormData, Note } from "@/types/note";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function EditNotePage() {
   const params = useParams();
@@ -68,14 +69,15 @@ export default function EditNotePage() {
 
   if (!note) {
     return (
-      <SidebarProvider
-        style={
-          {
-            "--sidebar-width": "calc(var(--spacing) * 72)",
-            "--header-height": "calc(var(--spacing) * 12)",
-          } as React.CSSProperties
-        }
-      >
+      <ProtectedRoute>
+        <SidebarProvider
+          style={
+            {
+              "--sidebar-width": "calc(var(--spacing) * 72)",
+              "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties
+          }
+        >
         <AppSidebar variant="inset" />
         <SidebarInset>
           <SiteHeader />
@@ -93,10 +95,12 @@ export default function EditNotePage() {
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </ProtectedRoute>
     );
   }
 
   return (
+    <ProtectedRoute>
     <SidebarProvider
       style={
         {
@@ -125,5 +129,6 @@ export default function EditNotePage() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }

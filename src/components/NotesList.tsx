@@ -55,7 +55,7 @@ export function NotesList({
   onView 
 }: NotesListProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [favoriteFilter, setFavoriteFilter] = useState(false);
 
   const filteredNotes = notes.filter(note => {
@@ -63,7 +63,7 @@ export function NotesList({
                          note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesCategory = !categoryFilter || note.category === categoryFilter;
+    const matchesCategory = categoryFilter === 'all' || note.category === categoryFilter;
     const matchesFavorite = !favoriteFilter || note.isFavorite;
 
     return matchesSearch && matchesCategory && matchesFavorite;
@@ -131,7 +131,7 @@ export function NotesList({
                 <SelectValue placeholder="Semua kategori" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Semua kategori</SelectItem>
+                <SelectItem value="all">Semua kategori</SelectItem>
                 {NOTE_CATEGORIES.map((category) => (
                   <SelectItem key={category} value={category}>
                     {category}

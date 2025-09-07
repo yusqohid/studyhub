@@ -28,6 +28,7 @@ import {
 import { useNotes } from "@/contexts/notesContext";
 import { Note } from "@/types/note";
 import { formatDistanceToNow } from "date-fns";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function NoteDetailPage() {
   const params = useParams();
@@ -130,15 +131,16 @@ Catatan ini membahas tentang ${note.category.toLowerCase()} dan dapat digunakan 
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
+    <ProtectedRoute>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">
@@ -387,5 +389,6 @@ Catatan ini membahas tentang ${note.category.toLowerCase()} dan dapat digunakan 
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </ProtectedRoute>
   );
 }
