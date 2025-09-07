@@ -19,13 +19,19 @@ import {
   Download,
   RefreshCw
 } from "lucide-react";
-import { summarizeText, generateStudyQuestions, explainConcept, SummarizeOptions } from "@/lib/gemini";
 
 // Simple toast notification (replace with your preferred toast library)
 const toast = {
   success: (message: string) => alert(`✅ ${message}`),
   error: (message: string) => alert(`❌ ${message}`)
 };
+
+interface SummarizeOptions {
+  length?: 'short' | 'medium' | 'long';
+  style?: 'bullet' | 'paragraph' | 'outline';
+  focus?: 'key_points' | 'concepts' | 'actionable';
+  language?: 'id' | 'en';
+}
 
 interface AISummarizerProps {
   content: string;
@@ -62,9 +68,26 @@ export function AISummarizer({ content, title, onSummaryGenerated }: AISummarize
 
     setLoading(true);
     try {
-      const summary = await summarizeText(content, title, options);
-      setResult(summary);
-      onSummaryGenerated?.(summary);
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          title,
+          type: 'summarize',
+          options
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate summary');
+      }
+
+      const data = await response.json();
+      setResult(data.result);
+      onSummaryGenerated?.(data.result);
       toast.success('Ringkasan berhasil dibuat!');
     } catch (error) {
       console.error('Summarization error:', error);
@@ -82,8 +105,25 @@ export function AISummarizer({ content, title, onSummaryGenerated }: AISummarize
 
     setLoading(true);
     try {
-      const questions = await generateStudyQuestions(content, title, difficulty);
-      setResult(questions);
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          title,
+          type: 'questions',
+          options: { difficulty }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate questions');
+      }
+
+      const data = await response.json();
+      setResult(data.result);
       toast.success('Pertanyaan belajar berhasil dibuat!');
     } catch (error) {
       console.error('Question generation error:', error);
@@ -101,8 +141,25 @@ export function AISummarizer({ content, title, onSummaryGenerated }: AISummarize
 
     setLoading(true);
     try {
-      const explanation = await explainConcept(concept, content, level);
-      setResult(explanation);
+      const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          title,
+          type: 'explain',
+          options: { concept, context: content, level }
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to explain concept');
+      }
+
+      const data = await response.json();
+      setResult(data.result);
       toast.success('Penjelasan konsep berhasil dibuat!');
     } catch (error) {
       console.error('Concept explanation error:', error);
