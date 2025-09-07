@@ -56,8 +56,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setError(null);
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };
@@ -75,8 +75,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (result.user) {
         await sendEmailVerification(result.user);
       }
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };
@@ -85,8 +85,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setError(null);
       await signInWithPopup(auth, googleProvider);
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };
@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setError(null);
       await signOut(auth);
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };
@@ -105,8 +105,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       setError(null);
       await sendPasswordResetEmail(auth, email);
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };
@@ -117,8 +117,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (user) {
         await sendEmailVerification(user);
       }
-    } catch (error: any) {
-      setError(getErrorMessage(error.code));
+    } catch (error: unknown) {
+      setError(getErrorMessage((error as { code: string }).code));
       throw error;
     }
   };

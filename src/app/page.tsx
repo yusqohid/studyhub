@@ -1,141 +1,202 @@
 "use client";
 
-import { useAuth } from "@/contexts/authContext";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
+import { BookOpen, Brain, Clock, Users } from "lucide-react";
 
 export default function Home() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            Selamat Datang di <span className="text-blue-600">StudyHub</span>
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Platform catatan pintar dengan AI summarizer untuk membantu Anda belajar lebih efektif
-          </p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b animate-fadeInDown">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-2 hover:scale-105 transition-transform duration-200">
+            <BookOpen className="h-8 w-8 text-primary" />
+            <span className="text-xl font-semibold">StudyHub</span>
+          </div>
+          <nav className="hidden md:flex items-center space-x-6">
+            <Link href="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Features
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Pricing
+            </Link>
+            <Link href="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Login
+            </Link>
+            <Link href="/signup">
+              <Button size="sm" className="hover:scale-105 transition-transform duration-200">Get Started</Button>
+            </Link>
+          </nav>
         </div>
+      </header>
 
-        {user ? (
-          <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Halo, {user.displayName || user.email}!</CardTitle>
+      {/* Hero Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 animate-fadeInUp">
+            Smart Notes with
+            <span className="block text-primary">AI-Powered Insights</span>
+          </h1>
+          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto animate-fadeInUp delay-100">
+            Transform your learning experience with intelligent note-taking, AI summarization, 
+            and collaborative study tools designed for modern students.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp delay-200">
+            <Link href="/signup">
+              <Button size="lg" className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
+                Start Taking Notes
+              </Button>
+            </Link>
+            <Link href="/features">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
+                Learn More
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section className="py-20 bg-muted/50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16 animate-fadeInUp">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Everything you need to succeed
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Powerful tools to enhance your learning and productivity
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp delay-100">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <Brain className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle>AI Summarization</CardTitle>
                 <CardDescription>
-                  Anda sudah masuk ke akun StudyHub
+                  Automatically generate concise summaries of your notes with advanced AI technology
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center space-y-4">
-                <p className="text-gray-600">
-                  Siap untuk mulai membuat catatan dan belajar dengan AI?
-                </p>
-                <Link href="/dashboard">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Buka Dashboard
-                  </Button>
-                </Link>
-              </CardContent>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp delay-200">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <BookOpen className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle>Smart Organization</CardTitle>
+                <CardDescription>
+                  Organize your notes with tags, categories, and intelligent search capabilities
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp delay-300">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <Users className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle>Collaboration</CardTitle>
+                <CardDescription>
+                  Share and collaborate on notes with classmates and study groups
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="text-center hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp delay-500">
+              <CardHeader>
+                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-lg w-fit">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle>Real-time Sync</CardTitle>
+                <CardDescription>
+                  Access your notes anywhere with real-time synchronization across all devices
+                </CardDescription>
+              </CardHeader>
             </Card>
           </div>
-        ) : (
-          <div className="max-w-4xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8 mb-16">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-2xl">📝</span>
-                    Catatan Pintar
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Buat catatan dengan mudah dan dapatkan ringkasan otomatis menggunakan AI
-                  </p>
-                </CardContent>
-              </Card>
+        </div>
+      </section>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-2xl">🤖</span>
-                    AI Summarizer
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Dapatkan ringkasan otomatis dari catatan Anda untuk belajar lebih efisien
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-2xl">🔍</span>
-                    Pencarian Cepat
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Temukan catatan dan informasi dengan mudah menggunakan fitur pencarian
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <span className="text-2xl">☁️</span>
-                    Sinkronisasi Cloud
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600">
-                    Akses catatan Anda di mana saja dengan sinkronisasi cloud yang aman
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                Mulai Belajar Hari Ini
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Bergabunglah dengan ribuan siswa yang sudah menggunakan StudyHub
-              </p>
+      {/* CTA Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <Card className="text-center max-w-2xl mx-auto hover:shadow-lg hover:scale-105 transition-all duration-300 animate-fadeInUp">
+            <CardHeader>
+              <CardTitle className="text-3xl">Ready to get started?</CardTitle>
+              <CardDescription className="text-lg">
+                Join thousands of students who are already using StudyHub to improve their learning experience.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link href="/signup">
-                  <Button size="lg" className="w-full sm:w-auto">
-                    Daftar Gratis
+                  <Button size="lg" className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
+                    Create Free Account
                   </Button>
                 </Link>
-                <Link href="/login">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                    Masuk
+                <Link href="/dashboard">
+                  <Button variant="outline" size="lg" className="w-full sm:w-auto hover:scale-105 transition-transform duration-200">
+                    View Dashboard
                   </Button>
                 </Link>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t bg-muted/30 animate-fadeIn">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <BookOpen className="h-6 w-6 text-primary" />
+                <span className="font-semibold">StudyHub</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Smart note-taking with AI-powered insights for modern students.
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-medium">Product</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/features" className="hover:text-foreground transition-colors">Features</Link></li>
+                <li><Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link></li>
+                <li><Link href="/dashboard" className="hover:text-foreground transition-colors">Dashboard</Link></li>
+              </ul>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-medium">Account</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link href="/login" className="hover:text-foreground transition-colors">Login</Link></li>
+                <li><Link href="/signup" className="hover:text-foreground transition-colors">Sign Up</Link></li>
+                <li><Link href="/profile" className="hover:text-foreground transition-colors">Profile</Link></li>
+              </ul>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-medium">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Privacy</a></li>
+              </ul>
             </div>
           </div>
-        )}
-
-        <footer className="mt-16 text-center text-gray-500">
-          <p>&copy; 2024 StudyHub. Dibuat dengan ❤️ untuk pembelajaran yang lebih baik.</p>
-        </footer>
-      </div>
+          
+          <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+            <p>&copy; 2024 StudyHub. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
