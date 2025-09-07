@@ -4,8 +4,16 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/compone                          {!summary && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={handleSummarize}
+                            >
+                              <Brain className="w-4 h-4 mr-2" />
+                              Buat Ringkasan AI
+                            </Button>
+                          )}rt { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   SidebarInset,
@@ -29,15 +37,16 @@ import { useNotes } from "@/contexts/notesContext";
 import { Note } from "@/types/note";
 import { formatDistanceToNow } from "date-fns";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { AISummarizer } from "@/components/AISummarizer";
 
 export default function NoteDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { getNoteById, toggleFavorite, updateNote } = useNotes();
   const [note, setNote] = useState<Note | null>(null);
-  const [isSummarizing, setIsSummarizing] = useState(false);
   const [summary, setSummary] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const [showSummarizer, setShowSummarizer] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -76,29 +85,24 @@ export default function NoteDetailPage() {
 
   const handleSummarize = async () => {
     if (!note) return;
-    
-    setIsSummarizing(true);
-    try {
-      // Simulate AI summarization (replace with actual AI API call)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const mockSummary = `Ringkasan dari &quot;${note.title}&quot;:
-      
-1. Poin utama pertama dari catatan ini
-2. Poin penting kedua yang perlu diingat
-3. Kesimpulan atau insight yang didapat
+    setShowSummarizer(true);
+  };
 
-Catatan ini membahas tentang ${note.category.toLowerCase()} dan dapat digunakan sebagai referensi belajar.`;
-      
-      setSummary(mockSummary);
-      
+  const handleSummaryGenerated = async (summaryText: string) => {
+    if (!note) return;
+    
+    try {
       // Save summary to note
-      await updateNote(note.id, {});
+      await updateNote(note.id, {
+        title: note.title,
+        content: note.content,
+        category: note.category,
+        tags: note.tags,
+        isPublic: note.isPublic
+      });
+      setSummary(summaryText);
     } catch (error) {
-      console.error('Error generating summary:', error);
-      alert('Gagal membuat ringkasan');
-    } finally {
-      setIsSummarizing(false);
+      console.error('Error saving summary:', error);
     }
   };
 
